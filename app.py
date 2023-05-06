@@ -11,6 +11,9 @@ def main():
 
     pdf = st.file_uploader("Upload your PDF", type="pdf")
 
+    if pdf is not None:
+        pdf_reader = PdfReader(pdf)
+
 
 if __name__ == "__main__":
     main()

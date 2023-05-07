@@ -3,6 +3,8 @@ import os
 import streamlit as st
 from PyPDF2 import PdfReader
 from langchain.text_splitter import CharacterTextSplitter
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.vectorstores import FAISS
 
 
 def main():
@@ -17,8 +19,18 @@ def main():
         text = ""
         for page in pdf_reader.pages:
             text += page.extract_text()
+        # split into chunks
+        text_splitter = CharacterTextSplitter(
+            separator="\n", chunk_size=1000, chunk_overlap=200, length_function=len
+        )
 
-            st.write(text)
+        chunks = text_splitter.split_text(text)
+
+        # st.write(chunks)
+
+        # create embeddings
+        embeddings = OpenAIEmbeddings()
+        document = FAISS.from_texts(chunks, embeddings)
 
 
 if __name__ == "__main__":
